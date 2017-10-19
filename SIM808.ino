@@ -5,14 +5,14 @@ void powerOn() {
   digitalWrite(SIM808_PIN, LOW);
   Serial.println("Sim808 on");
   while (!sim808.init()) {
-    Serial.print("Initialize Sim808, waiting \r\n");
+    Serial.print(F("Initialize Sim808, waiting \r\n"));
     delay(1000);
   }
-  Serial.println("Sim808 initialized, ready to receive SMS messages");
+  Serial.println(F("Sim808 initialized, ready to receive SMS messages"));
 }
 
 void powerOff() {
-  Serial.println("\r\nSlukker sim");
+  Serial.println(F("\r\nSlukker sim"));
 
   digitalWrite(SIM808_PIN, HIGH);
   delay(3000);
@@ -24,7 +24,7 @@ void powerOff() {
 void restartSim() {
 
   powerOff();
-  Serial.println("Pause 20000");
+  Serial.println(F("Pause 20000"));
   for (int i = 0; i < 20; i++) {
     delay(2000);
     Serial.println(".");
@@ -42,12 +42,12 @@ void restartSim() {
 
 void shutdownSim() {
   //Virker som designet
-  char test[] = "Sim808 & Arduino will be dead";
+  char const test[] = "Sim808 & Arduino will be dead";
   //strcpy(tekst, test);
   boolean rc = sim808.sendSMS(phone, test);
   delay(1000);
   powerOff();
-  Serial.print("Sim808 shut down, end of life rc=");
+  Serial.print(F("Sim808 shut down, end of life rc="));
   Serial.println(rc);
   do {} while (1);
 

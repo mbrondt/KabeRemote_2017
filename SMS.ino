@@ -44,7 +44,7 @@ void getTimeSMS() {
   char tid[10] = "bum";
   getTime().toCharArray(tid, 6);
 //  strcat(tekst, tid);
-  char lTekst[] = "\r\nTicks since boot ";
+  char const lTekst[] = "\r\nTicks since boot ";
   strcat(tekst, lTekst);
   char ticks[7];
   itoa(ticksSinceBoot, ticks, 6);

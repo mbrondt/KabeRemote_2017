@@ -1,17 +1,17 @@
 #include <DFRobot_sim808.h>
-//#include <sim808.h>
 #include <SoftwareSerial.h>
 #include <OneWire.h>
 OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
-//Github
+//
 #define RELAY_PIN 6
 #define SIM808_PIN 12
 #define MESSAGE_LENGTH 20
+#define TEKST_LENGTH 160
+
 char message[MESSAGE_LENGTH];
 char gprsBuffer[64];
 char *s = NULL;
-char phone[16] = "+4522947000";
-#define TEKST_LENGTH 160
+char const phone[16] = "+4522947000";
 char tekst[TEKST_LENGTH];
 char datetime[24];
 int messageIndex = 0;
@@ -20,7 +20,7 @@ int lowTemp = 100;
 int highTemp = -100;
 long ticksSinceBoot = 0;
 
-
+//
 DFRobot_SIM808 sim808(&Serial);
 
 void setup(void) {
@@ -67,10 +67,10 @@ void loop(void) {
       Serial.print("\r\n                        ALDE status: ");
       if (onOff == 0) {
         strcpy(tekst, "ALDE ON");
-        Serial.print("Varme ON");
+        Serial.print(F("Varme ON"));
       } else {
         strcpy(tekst, "ALDE OFF");
-        Serial.print("Varme OFF");
+        Serial.print(F("Varme OFF"));
       }
       getTempPartSMS();
     }
@@ -90,7 +90,7 @@ void loop(void) {
   //visGPS();
   String now = getTime();
   //********* er det ved at være boot time ****************
-  if (now.equals("5:58")) {
+  if (ticksSinceBoot > 100000) {
     restartSim();
   }
   delay(3000);
