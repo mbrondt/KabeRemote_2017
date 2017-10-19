@@ -13,7 +13,7 @@ float getTemp() {
   }
 
   if (OneWire::crc8(addr, 7) != addr[7]) {
-    Serial.println("CRC is not valid!");
+    Serial.println(F("CRC is not valid!"));
     return -1;
   }
 
