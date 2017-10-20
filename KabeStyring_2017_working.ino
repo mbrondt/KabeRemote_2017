@@ -7,6 +7,7 @@ OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
 #define SIM808_PIN 12
 #define MESSAGE_LENGTH 20
 #define TEKST_LENGTH 160
+#define BOOT_TICKS 100000
 
 char message[MESSAGE_LENGTH];
 char gprsBuffer[64];
@@ -73,7 +74,14 @@ void loop(void) {
         Serial.print(F("Varme OFF"));
       }
       getTempPartSMS();
+    } else {
+      //********* er det ved at være boot time ****************
+      if (ticksSinceBoot > BOOT_TICKS) {
+        restartSim();
+      }
     }
+  }
+
 
     //************ teknik kommandoer ************************
     if (strcmp(tekst, "Restart sim808") == 0) {
@@ -86,13 +94,7 @@ void loop(void) {
       getTimeSMS();
     }
   }
-
   //visGPS();
-  String now = getTime();
-  //********* er det ved at være boot time ****************
-  if (ticksSinceBoot > 100000) {
-    restartSim();
-  }
   delay(3000);
 
 }
