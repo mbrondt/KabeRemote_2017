@@ -16,7 +16,7 @@ void sendWelcomeSMS() {
 }
 
 void getTempPartSMS() {
-  Serial.print("\r\n                        Temp i vogn: ");
+  Serial.print(F("\r\n                        Temp i vogn: "));
   Serial.println(temp, 2);
 
   strcat(tekst, "\r\nTemp i vogn: ");
@@ -40,19 +40,15 @@ void getTempPartSMS() {
 }
 
 void getTimeSMS() {
-  strcpy(tekst, "\r\nSystem tid: ");
-  char tid[10] = "bum";
-  getTime().toCharArray(tid, 6);
-//  strcat(tekst, tid);
-  char lTekst[] = "\r\nTicks since boot ";
-  strcat(tekst, lTekst);
-  char ticks[7];
-  itoa(ticksSinceBoot, ticks, 6);
-  strcat(tekst, ticks);
-  Serial.print(tekst);
-  Serial.println(ticks);
+  String tid = "\r\nSystem tid: ";
+  tid += getTime();
+  tid += "\r\nTicks since boot ";
+  tid += ticksSinceBoot;
+  Serial.println(tid);
+  char text[160];
+  tid.toCharArray(text, tid.length());
   delay(3000);
-  sim808.sendSMS(phone, tekst);
+  sim808.sendSMS(phone, text);
 
 }
 

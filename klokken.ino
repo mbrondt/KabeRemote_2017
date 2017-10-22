@@ -9,7 +9,7 @@ String getTime() {
   hour = String(iHour);
   String minute = test.substring(komma + 4, komma + 6);
   test = hour + ":" + minute;
-  Serial.print("Kl: ");
+  Serial.print(F("Kl: "));
   Serial.println(test);
   return test;
 }

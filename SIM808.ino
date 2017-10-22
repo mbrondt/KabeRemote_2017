@@ -1,33 +1,33 @@
 void powerOn() {
-  Serial.println("\r\nTaender sim ");
+  Serial.println(F("\r\nTaender sim "));
   digitalWrite(SIM808_PIN, HIGH);
   delay(1000);
   digitalWrite(SIM808_PIN, LOW);
-  Serial.println("Sim808 on");
+  Serial.println(F("Sim808 on"));
   while (!sim808.init()) {
-    Serial.print("Initialize Sim808, waiting \r\n");
+    Serial.print(F("Initialize Sim808, waiting \r\n"));
     delay(1000);
   }
-  Serial.println("Sim808 initialized, ready to receive SMS messages");
+  Serial.println(F("Sim808 initialized, ready to receive SMS messages"));
 }
 
 void powerOff() {
-  Serial.println("\r\nSlukker sim");
+  Serial.println(F("\r\nSlukker sim"));
 
   digitalWrite(SIM808_PIN, HIGH);
   delay(3000);
   digitalWrite(SIM808_PIN, LOW);
-  Serial.println("Sim808 off");
+  Serial.println(F("Sim808 off"));
   delay(5000);
 }
 
 void restartSim() {
 
   powerOff();
-  Serial.println("Pause 20000");
+  Serial.println(F("Pause 20000"));
   for (int i = 0; i < 20; i++) {
     delay(2000);
-    Serial.println(".");
+    Serial.println(F("."));
   }
   powerOn();
   strcpy(tekst, "Sim808 re-started");
@@ -40,16 +40,20 @@ void restartSim() {
   getTempPartSMS();
 }
 
+//char const admTlfNr[] = "+4522947000";
 void shutdownSim() {
-  //Virker som designet
-  char test[] = "Sim808 & Arduino will be dead";
-  //strcpy(tekst, test);
-  boolean rc = sim808.sendSMS(phone, test);
-  delay(1000);
-  powerOff();
-  Serial.print("Sim808 shut down, end of life rc=");
-  Serial.println(rc);
-  do {} while (1);
+  //Kun mit tlfnr der kan lave shutdown
+  if (strcmp(phone, admTlfNr) == 0) {
+    char test[] = "Sim808 & Arduino will be dead";
+    //strcpy(tekst, test);
+    boolean rc = sim808.sendSMS(phone, test);
+    delay(1000);
+    powerOff();
+    Serial.print(F("Sim808 shut down, end of life rc="));
+    Serial.println(rc);
+    do {} while (1);
+    sim808.sendSMS(phone, "");
+  }
 
 }
 
@@ -66,7 +70,7 @@ void cleanUp() {
       char message[MESSAGE_LENGTH];
       int messageIndex = atoi(s + 12);
       sim808.readSMS(messageIndex, message, MESSAGE_LENGTH);
-      Serial.print("Recv Message: ");
+      Serial.print(F("Recv Message: "));
       Serial.println(message);
     }
     sim808_clean_buffer(gprsBuffer, 32);
