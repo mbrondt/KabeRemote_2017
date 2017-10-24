@@ -65,7 +65,7 @@ void getTimeSMS() {
   Serial.println(timeText);
   delay(3000);
   char cTimeText[160];
-  timeText.toCharArray(cTimeText, timeText.length()+1);
+  timeText.toCharArray(cTimeText, timeText.length() + 1);
   sim808.sendSMS(phone, cTimeText);
 
 }
