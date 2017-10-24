@@ -11,6 +11,7 @@ float getTemp() {
     delay(250);
     //return -1;
   }
+  delay(1000);     // maybe 750ms is enough, maybe not
 
   if (OneWire::crc8(addr, 7) != addr[7]) {
     Serial.println(F("CRC is not valid!"));
@@ -21,7 +22,6 @@ float getTemp() {
   ds.select(addr);
   ds.write(0x44, 1);        // start conversion, with parasite power on at the end
 
-  delay(1000);     // maybe 750ms is enough, maybe not
 
   present = ds.reset();
   ds.select(addr);

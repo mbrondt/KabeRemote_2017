@@ -27,17 +27,17 @@ void restartSim() {
   Serial.println(F("Pause 20000"));
   for (int i = 0; i < 20; i++) {
     delay(2000);
-    Serial.println(".");
+    Serial.print(".");
   }
   powerOn();
   strcpy(tekst, "Sim808 re-started");
   int onOff = (digitalRead(RELAY_PIN));
   if (onOff == 0) {
-    strcat(tekst, "\r\nALDE ON");
+    strcat(tekst, "\r\nAlde ON");
   } else {
-    strcat(tekst, "\r\nALDE OFF");
+    strcat(tekst, "\r\nAlde OFF");
   }
-  getTempPartSMS();
+  getTempPartSMS(phone);
 }
 
 void shutdownSim() {
@@ -51,6 +51,24 @@ void shutdownSim() {
   Serial.println(rc);
   do {} while (1);
 
+}
+
+String getTime() {
+  String test;
+  sim808.getDateTime(tekst); //Snyd med besked feltet fra SMS'en
+  test = tekst;
+  Serial.println(test);
+  int komma = test.indexOf(',');
+  String hour = test.substring(komma + 1, komma +3);
+  int iHour = hour.toInt() + 14; //convert til tidszone
+  hour = String(iHour);
+  String minute = test.substring(komma + 4, komma + 6);
+  int iMin = minute.toInt() + 12; //Den mærkelige tid fra GSM
+  minute = String(iMin);
+  test = hour + ":" + minute;
+  Serial.print("Kl: ");
+  Serial.println(test);
+  return test;
 }
 
 void cleanUp() {

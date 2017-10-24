@@ -1,21 +1,39 @@
 void sendWelcomeSMS() {
-  strcpy(tekst, "Sim808 started up");
+  String text = "\r\nSim808 started up";
   int onOff = (digitalRead(RELAY_PIN));
   if (onOff == 0) {
-    strcat(tekst, "\r\nALDE ON");
+    text += "\r\nAlde ON\r\n";
   } else {
-    strcat(tekst, "\r\nALDE OFF");
+    text += "\r\nAlde OFF\r\n";
   }
-  strcat(tekst, "\r\nTemp i vogn: ");
-  char temperatur[10];
+  //text += "\r\nTemp i vogn: ";
   //Her er getTemp() fordi vi ikke er nået ned i loop()
-  dtostrf(getTemp(), 3, 2, temperatur);
-  strcat(tekst, temperatur);
+  //text += getTemp();
+  text.toCharArray(tekst, text.length() + 1);
+  Serial.print(tekst);
   //indtil prod  sim808.sendSMS(phone, tekst);
 
 }
+//MAngler resten !!!
+void synchTimeSMS() {
+  strcpy(phone, "+45????");
+  strcpy(tekst, "Init time");
+  sim808.sendSMS(phone, tekst);
 
-void getTempPartSMS() {
+  while (sim808.isSMSunread() == 0) {
+    Serial.print(F("Venter på initSMS \r\n"));
+    delay(1000);
+  }
+
+  sim808.readSMS(messageIndex, tekst, TEKST_LENGTH, phone, datetime);
+  Serial.print("\r\n");
+  Serial.print(datetime);
+  delay(3000);
+  sim808.deleteSMS(messageIndex);
+
+
+}
+void getTempPartSMS(char* phone) {
   Serial.print("\r\n                        Temp i vogn: ");
   Serial.println(temp, 2);
 
@@ -40,19 +58,15 @@ void getTempPartSMS() {
 }
 
 void getTimeSMS() {
-  strcpy(tekst, "\r\nSystem tid: ");
-  char tid[10] = "bum";
-  getTime().toCharArray(tid, 6);
-//  strcat(tekst, tid);
-  char const lTekst[] = "\r\nTicks since boot ";
-  strcat(tekst, lTekst);
-  char ticks[7];
-  itoa(ticksSinceBoot, ticks, 6);
-  strcat(tekst, ticks);
-  Serial.print(tekst);
-  Serial.println(ticks);
+  String timeText = "\r\nGSM net tid: ";
+  timeText += getTime();
+  timeText += "\r\nTicks since boot ";
+  timeText += ticksSinceBoot;
+  Serial.println(timeText);
   delay(3000);
-  sim808.sendSMS(phone, tekst);
+  char cTimeText[160];
+  timeText.toCharArray(cTimeText, timeText.length()+1);
+  sim808.sendSMS(phone, cTimeText);
 
 }
 
