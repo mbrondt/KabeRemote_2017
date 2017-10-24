@@ -32,22 +32,24 @@ void setup(void) {
   Serial.begin(9600);
 
   //******** Initialize sim808 module *************
+  powerOff();
   powerOn(); //inkl. timingsloop til connect
-  sendWelcomeSMS();
-  //initGPS();
   delay(3000);
   cleanUp();
   delay(2000);
-  String test;
+  sendWelcomeSMS();
+  //synchTimeSMS();
+  //initGPS();
 }
 
 
 void loop(void) {
   ticksSinceBoot++;
   temp = getTemp();
+  Serial.print("\r\n");
+  Serial.println(temp);
   if ((int)temp <= lowTemp) lowTemp = (int)temp;
   if ((int)temp >= highTemp) highTemp = (int)temp;
-
 
   //*********** Detecting unread SMS ************************
   messageIndex = sim808.isSMSunread();
@@ -73,15 +75,8 @@ void loop(void) {
         strcpy(tekst, "ALDE OFF");
         Serial.print(F("Varme OFF"));
       }
-      getTempPartSMS();
-    } else {
-      //********* er det ved at være boot time ****************
-      if (ticksSinceBoot > BOOT_TICKS) {
-        restartSim();
-      }
+      getTempPartSMS(phone);
     }
-  }
-
 
     //************ teknik kommandoer ************************
     if (strcmp(tekst, "Restart sim808") == 0) {
@@ -93,10 +88,16 @@ void loop(void) {
     if (strcmp(tekst, "Time") == 0) {
       getTimeSMS();
     }
+  } else { //messageIndex if
+    //********* er det ved at være boot time ****************
+    if (ticksSinceBoot > BOOT_TICKS) {
+      restartSim();
+      ticksSinceBoot = 0;
+    }
   }
+
   //visGPS();
   delay(3000);
-
 }
 
 
