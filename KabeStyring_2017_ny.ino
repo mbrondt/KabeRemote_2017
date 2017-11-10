@@ -12,7 +12,7 @@ OneWire  ds(10);  // on pin 10 (a 4.7K resistor is necessary)
 char message[MESSAGE_LENGTH];
 char gprsBuffer[64];
 char *s = NULL;
-char const phone[16] = "+4522947000";
+char const phone[16]; //Fjernet nummer for big brother
 char tekst[TEKST_LENGTH];
 char datetime[24];
 int messageIndex = 0;
